@@ -40,6 +40,7 @@ interface AppState {
   history: string[];
   chat: ChatItem[];
   searchId: string | null;
+  shortlistId: string | null;
   loading: boolean;
   profileLogin: string | null;
   profile: Candidate | null;
@@ -64,6 +65,7 @@ interface AppState {
   removeSkill: (index: number) => void;
   reorderSkills: (from: number, to: number) => void;
   toggleShortlist: (login: string) => void;
+  saveShortlist: () => void;
   openProfile: (login: string) => Promise<void>;
   closeProfile: () => void;
   pushChat: (item: ChatItem) => number;
@@ -74,6 +76,7 @@ interface AppState {
 }
 
 let toastTimer: ReturnType<typeof setTimeout> | null = null;
+let saveTimer: ReturnType<typeof setTimeout> | null = null;
 
 export const useAppStore = create<AppState>()(
   persist(
@@ -89,6 +92,7 @@ export const useAppStore = create<AppState>()(
       history: [],
       chat: [],
       searchId: null,
+      shortlistId: null,
       loading: false,
       profileLogin: null,
       profile: null,
@@ -202,6 +206,32 @@ export const useAppStore = create<AppState>()(
         if (i >= 0) sl.splice(i, 1);
         else sl.push(login);
         set({ shortlist: sl });
+        get().saveShortlist();
+      },
+
+      // Best-effort save. Persists to localStorage via the store, and to the
+      // database per user when signed in (the route handles auth). Debounced.
+      saveShortlist: () => {
+        if (saveTimer) clearTimeout(saveTimer);
+        saveTimer = setTimeout(async () => {
+          try {
+            const res = await fetch("/api/shortlists", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                id: get().shortlistId ?? undefined,
+                name: get().query ? get().query.slice(0, 60) : "Shortlist",
+                logins: get().shortlist,
+              }),
+            });
+            if (res.ok) {
+              const data = (await res.json()) as { id: string };
+              if (data.id) set({ shortlistId: data.id });
+            }
+          } catch {
+            // ignore: localStorage persistence already covers reloads
+          }
+        }, 600);
       },
 
       openProfile: async (login) => {
@@ -349,7 +379,18 @@ export const useAppStore = create<AppState>()(
     }),
     {
       name: "shipscout-app",
-      partialize: (s) => ({ history: s.history }),
+      // Persist enough to survive a reload: history plus the current search and
+      // shortlist so the shortlist sidebar resolves names after a refresh.
+      partialize: (s) => ({
+        history: s.history,
+        shortlist: s.shortlist,
+        shortlistId: s.shortlistId,
+        query: s.query,
+        skills: s.skills,
+        candidates: s.candidates,
+        total: s.total,
+        repos: s.repos,
+      }),
     }
   )
 );
