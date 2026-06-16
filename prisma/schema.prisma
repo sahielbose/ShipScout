@@ -1,0 +1,213 @@
+// ShipScout data model (CONTEXT.md section 6).
+// Embeddings live in pgvector columns added by a raw migration
+// (prisma/migrations/vector.sql), since Prisma has no native vector type yet.
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["postgresqlExtensions"]
+}
+
+datasource db {
+  provider   = "postgresql"
+  url        = env("DATABASE_URL")
+  extensions = [vector]
+}
+
+model User {
+  id         String      @id @default(cuid())
+  email      String?     @unique
+  name       String?
+  image      String?
+  githubId   String?     @unique
+  githubLogin String?
+  orgId      String?
+  org        Org?        @relation(fields: [orgId], references: [id])
+  searches   Search[]
+  shortlists Shortlist[]
+  accounts   Account[]
+  sessions   Session[]
+  createdAt  DateTime    @default(now())
+}
+
+model Org {
+  id         String      @id @default(cuid())
+  name       String
+  members    User[]
+  shortlists Shortlist[]
+  createdAt  DateTime    @default(now())
+}
+
+// NextAuth (Auth.js) models for the Prisma adapter.
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+model Developer {
+  id            String            @id @default(cuid())
+  login         String            @unique
+  name          String?
+  location      String?
+  bio           String?
+  avatarUrl     String?
+  followers     Int               @default(0)
+  publicRepos   Int               @default(0)
+  hireable      Boolean?
+  rawJson       Json?
+  lastSyncedAt  DateTime?
+  status        String            @default("pending") // pending | ingesting | enriching | ready | error
+  repos         Repo[]
+  contributions Contribution[]
+  capabilities  Capability[]
+  profile       DeveloperProfile?
+  createdAt     DateTime          @default(now())
+}
+
+model Repo {
+  id              String    @id @default(cuid())
+  developerId     String
+  developer       Developer @relation(fields: [developerId], references: [id], onDelete: Cascade)
+  fullName        String
+  name            String
+  description     String?
+  stars           Int       @default(0)
+  primaryLanguage String?
+  languagesJson   Json?
+  isFork          Boolean   @default(false)
+
+  @@index([developerId])
+}
+
+model Contribution {
+  id             String    @id @default(cuid())
+  developerId    String
+  developer      Developer @relation(fields: [developerId], references: [id], onDelete: Cascade)
+  type           String // commit | pr | review | issue
+  repoFullName   String
+  count          Int       @default(0)
+  mergedExternal Boolean   @default(false)
+  year           Int
+  rawJson        Json?
+
+  @@index([developerId])
+}
+
+model Capability {
+  id           String    @id @default(cuid())
+  developerId  String
+  developer    Developer @relation(fields: [developerId], references: [id], onDelete: Cascade)
+  label        String
+  domain       String?
+  confidence   Float     @default(0)
+  evidenceJson Json?
+  // embedding vector(1024) added via prisma/migrations/vector.sql
+
+  @@index([developerId])
+}
+
+model DeveloperProfile {
+  id                 String    @id @default(cuid())
+  developerId        String    @unique
+  developer          Developer @relation(fields: [developerId], references: [id], onDelete: Cascade)
+  seniority          String?
+  seniorityReason    String?
+  summary            String?
+  languagesBreakdown Json?
+  signalsJson        Json?
+  insightsJson       Json?
+  // profileEmbedding vector(1024) added via prisma/migrations/vector.sql
+  updatedAt          DateTime  @updatedAt
+}
+
+model Search {
+  id             String         @id @default(cuid())
+  userId         String?
+  user           User?          @relation(fields: [userId], references: [id])
+  query          String
+  detectedSkills Json?
+  filtersJson    Json?
+  createdAt      DateTime       @default(now())
+  results        SearchResult[]
+  chat           ChatMessage[]
+}
+
+model SearchResult {
+  id          String @id @default(cuid())
+  searchId    String
+  search      Search @relation(fields: [searchId], references: [id], onDelete: Cascade)
+  developerId String
+  score       Float
+  rank        Int
+
+  @@index([searchId])
+}
+
+model Shortlist {
+  id     String          @id @default(cuid())
+  name   String          @default("Shortlist")
+  userId String?
+  user   User?           @relation(fields: [userId], references: [id])
+  orgId  String?
+  org    Org?            @relation(fields: [orgId], references: [id])
+  items  ShortlistItem[]
+}
+
+model ShortlistItem {
+  id          String     @id @default(cuid())
+  shortlistId String
+  shortlist   Shortlist  @relation(fields: [shortlistId], references: [id], onDelete: Cascade)
+  developerId String
+  status      String     @default("shortlisted")
+  outreach    Outreach[]
+
+  @@index([shortlistId])
+}
+
+model Outreach {
+  id              String        @id @default(cuid())
+  shortlistItemId String
+  item            ShortlistItem @relation(fields: [shortlistItemId], references: [id], onDelete: Cascade)
+  subject         String
+  body            String
+  sequenceStep    Int           @default(1)
+  status          String        @default("draft") // draft | sent
+  createdAt       DateTime      @default(now())
+}
+
+model ChatMessage {
+  id        String   @id @default(cuid())
+  searchId  String
+  search    Search   @relation(fields: [searchId], references: [id], onDelete: Cascade)
+  role      String
+  content   String
+  createdAt DateTime @default(now())
+}
