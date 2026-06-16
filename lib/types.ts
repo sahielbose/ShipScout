@@ -107,3 +107,64 @@ export interface ApiError {
   error: string;
   detail?: string;
 }
+
+// ----- Ingestion contract (CONTEXT.md section 7.2) -----
+// The normalized shape produced by the GitHub clients and consumed by the
+// enrichment step. Kept provider-agnostic so the engine can be tested offline.
+
+export interface IngestedRepo {
+  fullName: string;
+  name: string;
+  description: string | null;
+  stars: number;
+  primaryLanguage: string | null;
+  languages: Record<string, number>; // language -> bytes
+  isFork: boolean;
+}
+
+export interface IngestedContribution {
+  type: "commit" | "pr" | "review" | "issue";
+  repoFullName: string;
+  count: number;
+  mergedExternal: boolean;
+  year: number;
+}
+
+export interface IngestedPullRequest {
+  repoFullName: string;
+  title: string;
+  url: string;
+  mergedExternal: boolean;
+}
+
+export interface IngestedDeveloper {
+  login: string;
+  name: string | null;
+  location: string | null;
+  bio: string | null;
+  avatarUrl: string | null;
+  followers: number;
+  publicRepos: number;
+  hireable: boolean | null;
+  repos: IngestedRepo[];
+  contributions: IngestedContribution[];
+  notablePullRequests: IngestedPullRequest[];
+  fetchedAt: string; // ISO timestamp
+}
+
+// ----- Enrichment output (CONTEXT.md section 7.3) -----
+export interface EnrichedCapability {
+  label: string;
+  domain: string;
+  confidence: number;
+  evidence: string[];
+}
+
+export interface EnrichmentResult {
+  capabilities: EnrichedCapability[];
+  seniority: Seniority;
+  seniorityReason: string;
+  summary: string;
+  languages: { lang: string; pct: number }[];
+  signals: { externalPrsMerged: number };
+}
