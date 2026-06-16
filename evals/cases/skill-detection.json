@@ -1,0 +1,72 @@
+[
+  {
+    "query": "engineers who built tokio async runtimes in rust",
+    "expectDomain": "rust-systems",
+    "expectAny": ["tokio", "lock-free", "allocator", "unsafe rust", "zero-copy"]
+  },
+  {
+    "query": "people who optimize custom memory allocators and unsafe rust",
+    "expectDomain": "rust-systems",
+    "expectAny": ["allocator", "unsafe rust", "lock-free", "tokio"]
+  },
+  {
+    "query": "cryptography engineers working on zero knowledge proofs",
+    "expectDomain": "cryptography",
+    "expectAny": ["zero-knowledge", "elliptic-curve", "constant-time", "aead", "side-channel"]
+  },
+  {
+    "query": "find security folks who write constant-time cipher implementations",
+    "expectDomain": "cryptography",
+    "expectAny": ["constant-time", "aead", "side-channel", "elliptic-curve"]
+  },
+  {
+    "query": "compiler engineers who work on llvm backend codegen",
+    "expectDomain": "compilers",
+    "expectAny": ["llvm", "ssa", "parser", "incremental compilation", "type solving"]
+  },
+  {
+    "query": "wasm webassembly toolchain and component model developers",
+    "expectDomain": "wasm",
+    "expectAny": ["wasm", "jit", "sandbox runtime", "component model", "zero-copy"]
+  },
+  {
+    "query": "database query optimizer and storage engine engineers",
+    "expectDomain": "databases",
+    "expectAny": ["query planning", "lsm", "mvcc", "vectorized", "write-ahead"]
+  },
+  {
+    "query": "low latency hft trading systems with kernel-bypass networking",
+    "expectDomain": "low-latency",
+    "expectAny": ["low-latency", "kernel-bypass", "lock-free ring", "numa", "deterministic"]
+  },
+  {
+    "query": "ml inference engineers who write cuda kernels for llm serving",
+    "expectDomain": "ml-systems",
+    "expectAny": ["cuda", "quantization", "inference graph", "attention", "distributed training"]
+  },
+  {
+    "query": "distributed systems engineers who implemented raft consensus and replication",
+    "expectDomain": "distributed",
+    "expectAny": ["raft", "gossip", "grpc", "backpressure", "fault-tolerant"]
+  },
+  {
+    "query": "graphics and gpu engineers writing shaders and real-time rendering",
+    "expectDomain": "graphics",
+    "expectAny": ["gpu", "rendering", "shader", "spatial", "physics"]
+  },
+  {
+    "query": "robotics engineers who built slam and sensor fusion control loops",
+    "expectDomain": "robotics",
+    "expectAny": ["slam", "sensor fusion", "control loops", "rtos", "motion planning"]
+  },
+  {
+    "query": "someone strong with embedded kernel and low-level systems work",
+    "expectDomain": "rust-systems",
+    "expectAny": ["unsafe rust", "allocator", "lock-free", "tokio", "zero-copy"]
+  },
+  {
+    "query": "engineers who can tune mvcc concurrency in a sql storage layer",
+    "expectDomain": "databases",
+    "expectAny": ["mvcc", "lsm", "query planning", "vectorized", "write-ahead"]
+  }
+]

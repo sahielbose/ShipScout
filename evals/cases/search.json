@@ -1,0 +1,92 @@
+[
+  {
+    "query": "engineers who built tokio async runtimes in rust",
+    "filters": { "seniority": "Senior", "location": "", "repos": [] },
+    "expect": {
+      "minCandidates": 1,
+      "funnelMonotonic": true,
+      "reposIncludeAnyOf": ["tokio-rs/tokio", "rust-lang/rust", "embassy-rs/embassy"]
+    }
+  },
+  {
+    "query": "cryptography engineers working on zero knowledge proofs",
+    "filters": { "seniority": "Senior", "location": "", "repos": [] },
+    "expect": {
+      "minCandidates": 1,
+      "funnelMonotonic": true,
+      "reposIncludeAnyOf": ["RustCrypto/traits", "zkcrypto/bls12_381", "dalek-cryptography/curve25519-dalek"]
+    }
+  },
+  {
+    "query": "compiler engineers who work on llvm backend codegen",
+    "filters": { "seniority": "Mid", "location": "", "repos": [] },
+    "expect": {
+      "minCandidates": 1,
+      "funnelMonotonic": true,
+      "reposIncludeAnyOf": ["llvm/llvm-project", "ziglang/zig", "WebAssembly/binaryen"]
+    }
+  },
+  {
+    "query": "wasm webassembly toolchain and component model developers",
+    "filters": { "seniority": "Senior", "location": "", "repos": [] },
+    "expect": {
+      "minCandidates": 1,
+      "funnelMonotonic": true,
+      "reposIncludeAnyOf": ["bytecodealliance/wasmtime", "WebAssembly/binaryen", "emscripten-core/emscripten"]
+    }
+  },
+  {
+    "query": "database query optimizer and storage engine engineers",
+    "filters": { "seniority": "Senior", "location": "", "repos": [] },
+    "expect": {
+      "minCandidates": 1,
+      "funnelMonotonic": true,
+      "reposIncludeAnyOf": ["apache/datafusion", "duckdb/duckdb", "facebook/rocksdb"]
+    }
+  },
+  {
+    "query": "low latency hft trading systems with kernel-bypass networking",
+    "filters": { "seniority": "Senior", "location": "", "repos": [] },
+    "expect": {
+      "minCandidates": 1,
+      "funnelMonotonic": true,
+      "reposIncludeAnyOf": ["OpenHFT/Chronicle-Queue", "DPDK/dpdk", "real-logic/aeron"]
+    }
+  },
+  {
+    "query": "ml inference engineers who write cuda kernels for llm serving",
+    "filters": { "seniority": "Senior", "location": "", "repos": [] },
+    "expect": {
+      "minCandidates": 1,
+      "funnelMonotonic": true,
+      "reposIncludeAnyOf": ["pytorch/pytorch", "ggml-org/llama.cpp", "vllm-project/vllm"]
+    }
+  },
+  {
+    "query": "distributed systems engineers who implemented raft consensus and replication",
+    "filters": { "seniority": "Senior", "location": "", "repos": [] },
+    "expect": {
+      "minCandidates": 1,
+      "funnelMonotonic": true,
+      "reposIncludeAnyOf": ["etcd-io/etcd", "hashicorp/raft", "tikv/tikv"]
+    }
+  },
+  {
+    "query": "graphics and gpu engineers writing shaders and real-time rendering",
+    "filters": { "seniority": "Mid", "location": "", "repos": [] },
+    "expect": {
+      "minCandidates": 1,
+      "funnelMonotonic": true,
+      "reposIncludeAnyOf": ["bevyengine/bevy", "gfx-rs/wgpu", "godotengine/godot"]
+    }
+  },
+  {
+    "query": "robotics engineers who built slam and sensor fusion control loops",
+    "filters": { "seniority": "Senior", "location": "", "repos": [] },
+    "expect": {
+      "minCandidates": 1,
+      "funnelMonotonic": true,
+      "reposIncludeAnyOf": ["ros2/rclcpp", "stereolabs/zed-ros2-wrapper", "rtic-rs/rtic"]
+    }
+  }
+]
