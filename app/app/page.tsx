@@ -1,11 +1,8 @@
-// Placeholder workspace. Replaced by the full app shell in Phase 2.
-import { Logo } from "@/components/Logo";
+import { Workspace } from "@/components/app/Workspace";
 
+// The ShipScout workspace (CONTEXT.md sections 3.2 to 3.10). Search, results,
+// filters, profile drawer, shortlist, actions, and chat, all on the real api
+// seam. Gated by GitHub auth in production; open as a guest in local dev.
 export default function AppPage() {
-  return (
-    <main className="search-home" style={{ height: "100vh" }}>
-      <Logo size={50} className="sl" />
-      <div className="tg">Workspace coming online in Phase 2.</div>
-    </main>
-  );
+  return <Workspace />;
 }
