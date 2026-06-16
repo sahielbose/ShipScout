@@ -27,16 +27,40 @@ export function CandidateCard({ candidate, index }: { candidate: Candidate; inde
   }, [index]);
 
   return (
-    <div ref={ref} className="cand cand-card" onClick={() => openProfile(candidate.login)}>
+    <div
+      ref={ref}
+      className="cand cand-card"
+      role="button"
+      tabIndex={0}
+      aria-label={`Open profile for ${candidate.login}`}
+      onClick={() => openProfile(candidate.login)}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          openProfile(candidate.login);
+        }
+      }}
+    >
       <div className="top">
         <span>
           <span className="nm">{candidate.login}</span>
         </span>
         <span
           className={`star ${shortlisted ? "on" : ""}`}
+          role="button"
+          tabIndex={0}
+          aria-pressed={shortlisted}
+          aria-label={shortlisted ? `Remove ${candidate.login} from shortlist` : `Shortlist ${candidate.login}`}
           onClick={(e) => {
             e.stopPropagation();
             toggleShortlist(candidate.login);
+          }}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
+              e.stopPropagation();
+              toggleShortlist(candidate.login);
+            }
           }}
         >
           {shortlisted ? "starred" : "shortlist"}

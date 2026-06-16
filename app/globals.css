@@ -2022,3 +2022,24 @@ footer {
     transform: none;
   }
 }
+
+/* Accessibility: visible keyboard focus on interactive controls. */
+:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+.btn:focus-visible,
+.chip:focus-visible,
+.act-card:focus-visible,
+.aside .ab:focus-visible,
+.cand-card:focus-visible {
+  outline-color: var(--blue-2);
+}
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid var(--blue-2);
+  outline-offset: 2px;
+}
