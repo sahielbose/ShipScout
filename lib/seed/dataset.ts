@@ -19,15 +19,22 @@ export function seededDetect(query: string): string[] {
   return detectSkillsLocal(query);
 }
 
-export function seededSearchData(query: string): {
+export function seededTotal(query: string): number {
+  const r = rng(hash(query + "#total"));
+  return 420 + Math.floor(r() * 1100);
+}
+
+export function seededSearchData(
+  query: string,
+  skillsOverride?: string[]
+): {
   skills: string[];
   candidates: Candidate[];
   total: number;
 } {
-  const skills = detectSkillsLocal(query);
+  const skills = skillsOverride && skillsOverride.length ? skillsOverride : detectSkillsLocal(query);
   const candidates = genCandidates(query, skills);
-  const r = rng(hash(query + "#total"));
-  const total = 420 + Math.floor(r() * 1100);
+  const total = seededTotal(query);
   return { skills, candidates, total };
 }
 

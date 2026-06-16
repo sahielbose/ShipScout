@@ -14,8 +14,15 @@ import { seededSearchData, seededRepos } from "@/lib/seed/dataset";
 import { caps } from "@/lib/engine/capabilities";
 import { runHybridSearch } from "@/lib/engine/hybrid";
 
-export async function runSearch(query: string, filters: SearchFilters): Promise<SearchResponse> {
-  const detectedSkills = await detectCapabilities(query);
+export async function runSearch(
+  query: string,
+  filters: SearchFilters,
+  skillsOverride?: string[]
+): Promise<SearchResponse> {
+  // Detected skills are the retrieval anchors. When the user edits the chips,
+  // the override is passed back so the chips genuinely re-run retrieval.
+  const detectedSkills =
+    skillsOverride && skillsOverride.length ? skillsOverride : await detectCapabilities(query);
 
   // Real path: Postgres plus pgvector hybrid retrieval and ranking.
   if (caps.hasDatabase()) {
@@ -25,7 +32,7 @@ export async function runSearch(query: string, filters: SearchFilters): Promise<
   }
 
   // Seeded path (Phase 2). Deterministic, offline.
-  const { candidates, total } = seededSearchData(query);
+  const { candidates, total } = seededSearchData(query, detectedSkills);
   const visible = applyFilters(candidates, filters);
   const match = estimateCount(total, filters, visible.length);
   const funnel = computeFunnel(total, filters, match);

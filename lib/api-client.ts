@@ -31,8 +31,12 @@ export const api = {
     return data.skills;
   },
 
-  async search(query: string, filters: SearchFilters): Promise<SearchResponse> {
-    return postJson<SearchResponse>("/api/search", { query, filters });
+  async search(
+    query: string,
+    filters: SearchFilters,
+    skills?: string[]
+  ): Promise<SearchResponse> {
+    return postJson<SearchResponse>("/api/search", { query, filters, skills });
   },
 
   async getProfile(login: string): Promise<Candidate | null> {
