@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useRef, useState, type KeyboardEvent } from "react";
+import { useEffect, useMemo, useRef, useState, type KeyboardEvent } from "react";
 import { useAppStore, type ChatItem, type EmailPayload } from "@/lib/store/useAppStore";
+import type { Candidate } from "@/lib/types";
 import { IconArrowUp, IconRefine, IconMail, IconSequence, IconCopy } from "@/components/app/Icons";
 
 function escapeHtml(s: string): string {
@@ -101,7 +102,15 @@ export function ActionsView() {
   const chat = useAppStore((s) => s.chat);
   const sendChat = useAppStore((s) => s.sendChat);
   const runAction = useAppStore((s) => s.runAction);
-  const shortlist = useAppStore((s) => s.shortlistCandidates());
+  const candidates = useAppStore((s) => s.candidates);
+  const shortlistLogins = useAppStore((s) => s.shortlist);
+  const shortlist = useMemo<Candidate[]>(
+    () =>
+      shortlistLogins
+        .map((l) => candidates.find((c) => c.login === l))
+        .filter((c): c is Candidate => Boolean(c)),
+    [shortlistLogins, candidates]
+  );
   const [value, setValue] = useState("");
   const scrollRef = useRef<HTMLDivElement>(null);
 

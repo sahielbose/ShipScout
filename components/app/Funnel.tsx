@@ -1,13 +1,20 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { useAppStore } from "@/lib/store/useAppStore";
+import { applyFilters, computeFunnel, estimateCount } from "@/lib/engine/filter";
 
 // The funnel (CONTEXT.md sections 3.6 and 7.5): Total to Location to Match, with
 // bars that animate to their widths.
 export function Funnel() {
   const total = useAppStore((s) => s.total);
-  const f = useAppStore((s) => s.funnel());
+  const candidates = useAppStore((s) => s.candidates);
+  const filters = useAppStore((s) => s.filters);
+  const f = useMemo(() => {
+    const list = applyFilters(candidates, filters);
+    const match = estimateCount(total, filters, list.length);
+    return computeFunnel(total, filters, match);
+  }, [candidates, filters, total]);
   const ref = useRef<HTMLDivElement>(null);
 
   const widths = [

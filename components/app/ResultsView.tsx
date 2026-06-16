@@ -1,6 +1,8 @@
 "use client";
 
+import { useMemo } from "react";
 import { useAppStore } from "@/lib/store/useAppStore";
+import { applyFilters, estimateCount } from "@/lib/engine/filter";
 import { CandidateCard } from "@/components/app/CandidateCard";
 import { SkillChips } from "@/components/app/SkillChips";
 import { Filters } from "@/components/app/Filters";
@@ -27,8 +29,14 @@ function Skeleton() {
 // Results, filters, funnel, and the profile drawer (CONTEXT.md sections 3.5 to 3.7).
 export function ResultsView() {
   const loading = useAppStore((s) => s.loading);
-  const list = useAppStore((s) => s.filtered());
-  const count = useAppStore((s) => s.count());
+  const candidates = useAppStore((s) => s.candidates);
+  const filters = useAppStore((s) => s.filters);
+  const total = useAppStore((s) => s.total);
+  const list = useMemo(() => applyFilters(candidates, filters), [candidates, filters]);
+  const count = useMemo(
+    () => estimateCount(total, filters, list.length),
+    [total, filters, list.length]
+  );
 
   return (
     <div className="view on">
