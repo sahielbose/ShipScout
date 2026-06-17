@@ -32,6 +32,20 @@ export const authConfig: NextAuthConfig = {
       return session;
     },
   },
+  events: {
+    // Provision a personal org on first sign-in (orgs and seats, no billing).
+    async createUser({ user }) {
+      if (!hasDatabase() || !user.id) return;
+      try {
+        const org = await prisma.org.create({
+          data: { name: `${user.name || user.email || "Personal"} workspace` },
+        });
+        await prisma.user.update({ where: { id: user.id }, data: { orgId: org.id } });
+      } catch {
+        // non-fatal: the user still works without an org
+      }
+    },
+  },
 };
 
 export const { handlers, signIn, signOut, auth } = NextAuth(authConfig);
