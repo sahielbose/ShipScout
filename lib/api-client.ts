@@ -55,12 +55,13 @@ export const api = {
     history: ChatMessageDTO[],
     query: string,
     shortlist: ShortlistCandidate[],
-    onToken?: (text: string) => void
+    onToken?: (text: string) => void,
+    searchId?: string
   ): Promise<string> {
     const res = await fetch("/api/chat", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ query, messages: history, shortlist }),
+      body: JSON.stringify({ query, messages: history, shortlist, searchId }),
     });
     if (!res.ok || !res.body) {
       throw new Error("Chat is unavailable right now.");

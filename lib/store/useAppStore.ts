@@ -276,9 +276,15 @@ export const useAppStore = create<AppState>()(
           .shortlistCandidates()
           .map((c) => ({ login: c.login, name: c.name }));
         try {
-          await api.chat(history, get().query, shortlist, (full) => {
-            get().updateChat(idx, { content: full, typing: false });
-          });
+          await api.chat(
+            history,
+            get().query,
+            shortlist,
+            (full) => {
+              get().updateChat(idx, { content: full, typing: false });
+            },
+            get().searchId ?? undefined
+          );
         } catch {
           get().updateChat(idx, {
             content: "Chat is unavailable right now. Try again shortly.",
@@ -297,7 +303,8 @@ export const useAppStore = create<AppState>()(
               [{ role: "user", content: "refine" }],
               get().query,
               sl.map((c) => ({ login: c.login, name: c.name })),
-              (full) => get().updateChat(idx, { content: full, typing: false })
+              (full) => get().updateChat(idx, { content: full, typing: false }),
+              get().searchId ?? undefined
             );
           } catch {
             get().updateChat(idx, {
