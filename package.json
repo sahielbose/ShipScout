@@ -17,10 +17,11 @@
     "db:seed": "tsx lib/seed/seed.ts",
     "seed": "tsx lib/seed/seed.ts",
     "inngest": "inngest-cli dev",
-    "eval": "tsx evals/run.ts"
+    "eval": "tsx evals/run.ts",
+    "test": "node --import tsx --test \"tests/**/*.test.ts\""
   },
   "dependencies": {
-    "@anthropic-ai/sdk": "^0.39.0",
+    "@anthropic-ai/sdk": "^0.104.2",
     "@auth/prisma-adapter": "^2.7.4",
     "@prisma/client": "^6.2.1",
     "class-variance-authority": "^0.7.1",
