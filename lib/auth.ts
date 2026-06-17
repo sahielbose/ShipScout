@@ -1,3 +1,4 @@
+import { randomUUID } from "node:crypto";
 import NextAuth, { type NextAuthConfig } from "next-auth";
 import GitHub from "next-auth/providers/github";
 import { PrismaAdapter } from "@auth/prisma-adapter";
@@ -5,12 +6,20 @@ import { prisma, hasDatabase } from "@/lib/db";
 
 const hasGitHub = Boolean(process.env.AUTH_GITHUB_ID && process.env.AUTH_GITHUB_SECRET);
 
+// In local dev with no AUTH_SECRET set, use an ephemeral per-process secret so
+// the guest session endpoint works without any configuration. This is generated
+// at runtime, never hardcoded and never committed. Production must set
+// AUTH_SECRET (an unset secret there is a real misconfiguration).
+const ephemeralDevSecret =
+  process.env.NODE_ENV !== "production" ? randomUUID() : undefined;
+
 // Auth.js v5. Degrades gracefully: with no GitHub credentials the providers
 // list is empty (sign in is unavailable but the app still builds and runs as a
 // guest in dev). With a database, sessions persist via the Prisma adapter.
 export const authConfig: NextAuthConfig = {
   adapter: hasDatabase() ? PrismaAdapter(prisma) : undefined,
   session: { strategy: hasDatabase() ? "database" : "jwt" },
+  secret: process.env.AUTH_SECRET || ephemeralDevSecret,
   trustHost: true,
   providers: hasGitHub
     ? [
