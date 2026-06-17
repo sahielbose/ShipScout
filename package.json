@@ -4,6 +4,9 @@
   "private": true,
   "license": "MIT",
   "description": "Find elite engineers by what they ship. Open source AI sourcing over real GitHub work.",
+  "engines": {
+    "node": ">=20"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "prisma generate && next build",
