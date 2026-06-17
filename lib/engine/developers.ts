@@ -113,3 +113,17 @@ export async function requestSync(login: string): Promise<{ queued: boolean }> {
     return { queued: false };
   }
 }
+
+// Delisting path (CONTEXT.md section 18): remove a developer's ingested data on
+// request. Cascades to repos, contributions, capabilities, and the profile.
+export async function removeDeveloper(login: string): Promise<{ removed: boolean }> {
+  if (!hasDatabase()) return { removed: false };
+  try {
+    const dev = await prisma.developer.findUnique({ where: { login } });
+    if (!dev) return { removed: false };
+    await prisma.developer.delete({ where: { login } });
+    return { removed: true };
+  } catch {
+    return { removed: false };
+  }
+}
