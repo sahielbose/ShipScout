@@ -29,7 +29,14 @@ export function AppSidebar() {
 
   return (
     <aside className="aside">
-      <Logo size={26} className="logo" />
+      <button
+        className="logo-btn"
+        aria-label="ShipScout home"
+        title="ShipScout home"
+        onClick={() => setView("search")}
+      >
+        <Logo size={26} className="logo" />
+      </button>
       <button
         className={`ab ${view === "search" ? "on" : ""}`}
         title="New search"
