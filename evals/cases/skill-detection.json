@@ -68,5 +68,25 @@
     "query": "engineers who can tune mvcc concurrency in a sql storage layer",
     "expectDomain": "databases",
     "expectAny": ["mvcc", "lsm", "query planning", "vectorized", "write-ahead"]
+  },
+  {
+    "query": "engineers building real-time gpu rendering and shaders for a game engine",
+    "expectDomain": "graphics",
+    "expectAny": ["gpu", "rendering", "shader", "spatial", "physics"]
+  },
+  {
+    "query": "robotics engineers doing slam and sensor fusion control loops",
+    "expectDomain": "robotics",
+    "expectAny": ["slam", "sensor fusion", "control", "rtos", "motion planning"]
+  },
+  {
+    "query": "cuda kernel engineers for llm inference and quantization",
+    "expectDomain": "ml-systems",
+    "expectAny": ["cuda", "inference", "quantization", "attention", "distributed training"]
+  },
+  {
+    "query": "hft engineers doing kernel-bypass networking and lock-free ring buffers",
+    "expectDomain": "low-latency",
+    "expectAny": ["kernel-bypass", "lock-free ring", "low-latency networking", "numa", "deterministic"]
   }
 ]
