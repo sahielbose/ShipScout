@@ -1,6 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import { useSession, signOut } from "next-auth/react";
 import { Logo } from "@/components/Logo";
 import { useAppStore } from "@/lib/store/useAppStore";
 import { GITHUB_URL } from "@/lib/constants";
@@ -19,6 +20,7 @@ import {
 // export, github, help, exit to site.
 export function AppSidebar() {
   const router = useRouter();
+  const { data: session } = useSession();
   const view = useAppStore((s) => s.view);
   const query = useAppStore((s) => s.query);
   const newSearch = useAppStore((s) => s.newSearch);
@@ -74,9 +76,9 @@ export function AppSidebar() {
       <div className="spacer" />
       <button
         className="ab"
-        title="Exit to site"
-        aria-label="Exit to site"
-        onClick={() => router.push("/")}
+        title={session ? "Sign out" : "Exit to site"}
+        aria-label={session ? "Sign out" : "Exit to site"}
+        onClick={() => (session ? signOut({ callbackUrl: "/" }) : router.push("/"))}
       >
         <IconExit />
       </button>
