@@ -42,6 +42,36 @@ is a regression: fix it before committing.
 - Ground capability claims, summaries, and outreach in real evidence. Present
   seniority and capability as derived signals, not verdicts.
 
+## Continuous integration
+
+To enforce the green gate on every push and pull request, add this workflow at
+`.github/workflows/ci.yml` (it was not committed here because the build token
+lacked the GitHub `workflow` scope; add it via the GitHub web UI or a
+workflow-scoped token):
+
+```yaml
+name: CI
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm run test
+      - run: npm run eval
+      - run: npm run build
+```
+
 ## Where things live
 
 See `CONTEXT.md` section 12 and `CLAUDE.md` for the repo map. In short: `app/`
