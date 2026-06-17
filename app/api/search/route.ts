@@ -1,5 +1,7 @@
 import { runSearch } from "@/lib/engine/search";
 import { ok, fail, readJson } from "@/lib/http";
+import { persistSearch } from "@/lib/engine/persist";
+import { auth } from "@/lib/auth";
 import type { SearchFilters } from "@/lib/types";
 
 // POST /api/search -> { query, filters } returns
@@ -22,7 +24,17 @@ export async function POST(req: Request) {
   const skillsOverride = Array.isArray(body?.skills) ? body?.skills : undefined;
   try {
     const res = await runSearch(query, filters, skillsOverride);
-    return ok({ ...res, count: res.funnel.match });
+    // Persist the search when a database is configured; use its id so chat can
+    // link to it. Falls back to the in-memory searchId otherwise.
+    const session = await auth();
+    const persistedId = await persistSearch({
+      query,
+      detectedSkills: res.detectedSkills,
+      filters,
+      userId: session?.user?.id,
+    });
+    const searchId = persistedId ?? res.searchId;
+    return ok({ ...res, searchId, count: res.funnel.match });
   } catch {
     return fail("The search engine hit a snag. Try again in a moment.", 500);
   }
